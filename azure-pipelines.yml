@@ -1,19 +1,79 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- master
+  - main
+  - master
 
-pool:
-  vmImage: ubuntu-latest
+variables:
+  # Container registry service connection establecida durante la configuración de la pipeline
+  dockerRegistryServiceConnection: 'acr-connection'
+  containerRegistry: 'taller1ingesoft-c9e4gzcafdfyg9eg.azurecr.io'
+  # Versión de las imágenes
+  tag: '$(Build.BuildId)'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+- stage: Build
+  displayName: 'Build and Push Images'
+  jobs:
+  - job: BuildAndPushImages
+    displayName: 'Build and Push All Microservices'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Docker@2
+      displayName: 'Build and Push auth-api'
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: 'auth-api'
+        dockerfile: '$(System.DefaultWorkingDirectory)/auth-api/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)/auth-api'
+        tags: |
+          $(tag)
+          latest
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    - task: Docker@2
+      displayName: 'Build and Push frontend'
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: 'frontend'
+        dockerfile: '$(System.DefaultWorkingDirectory)/frontend/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)/frontend'
+        tags: |
+          $(tag)
+          latest
+
+    - task: Docker@2
+      displayName: 'Build and Push log-message-processor'
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: 'log-message-processor'
+        dockerfile: '$(System.DefaultWorkingDirectory)/log-message-processor/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)/log-message-processor'
+        tags: |
+          $(tag)
+          latest
+
+    - task: Docker@2
+      displayName: 'Build and Push todos-api'
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: 'todos-api'
+        dockerfile: '$(System.DefaultWorkingDirectory)/todos-api/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)/todos-api'
+        tags: |
+          $(tag)
+          latest
+
+    - task: Docker@2
+      displayName: 'Build and Push users-api'
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        repository: 'users-api'
+        dockerfile: '$(System.DefaultWorkingDirectory)/users-api/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)/users-api'
+        tags: |
+          $(tag)
+          latest
