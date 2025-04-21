@@ -1,14 +1,8 @@
-# Use Node.js 8.17.0 as base image (según la versión indicada en README)
-FROM node:8.17.0
+# Use Node.js 8.17.0 as base image with Alpine Linux for a smaller footprint
+FROM node:8.17.0-alpine
 
-# Install Python 2
-RUN apt-get update && apt-get install -y \
-    python2.7 \
-    python2.7-dev \
-    python-pip \
-    && ln -s /usr/bin/python2.7 /usr/bin/python \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install Python 2 and other dependencies using Alpine package manager
+RUN apk add --no-cache python2 make g++ 
 
 # Crear directorio de trabajo
 WORKDIR /app
