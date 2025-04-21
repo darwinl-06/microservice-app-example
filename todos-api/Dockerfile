@@ -14,7 +14,7 @@ COPY . .
 # Configurar variables de entorno con valores predeterminados para Azure Container
 ENV TODO_API_PORT=8082
 ENV JWT_SECRET=PRFT
-ENV REDIS_HOST=
+ENV REDIS_HOST=RedisIngeSoft.redis.cache.windows.net
 ENV REDIS_PORT=6379
 ENV REDIS_CHANNEL="log_channel"
 
