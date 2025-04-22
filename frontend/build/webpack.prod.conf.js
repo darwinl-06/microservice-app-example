@@ -9,12 +9,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
-// Create environment variables to pass to the app
-const processEnv = Object.assign({}, config.build.env, {
-  AUTH_API_ADDRESS: JSON.stringify(process.env.AUTH_API_ADDRESS || ''),
-  TODOS_API_ADDRESS: JSON.stringify(process.env.TODOS_API_ADDRESS || ''),
-  ZIPKIN_URL: JSON.stringify(process.env.ZIPKIN_URL || '')
-})
+var env = config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -32,7 +27,7 @@ var webpackConfig = merge(baseWebpackConfig, {
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
-      'process.env': processEnv
+      'process.env': env
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {

@@ -11,14 +11,6 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
   baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name])
 })
 
-// Create environment variables to pass to the app
-const processEnv = {
-  NODE_ENV: config.dev.env.NODE_ENV,
-  AUTH_API_ADDRESS: JSON.stringify(process.env.AUTH_API_ADDRESS || 'http://localhost:8000'),
-  TODOS_API_ADDRESS: JSON.stringify(process.env.TODOS_API_ADDRESS || 'http://localhost:8082'),
-  ZIPKIN_URL: JSON.stringify(process.env.ZIPKIN_URL || 'http://localhost:9411')
-}
-
 module.exports = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap })
@@ -27,7 +19,7 @@ module.exports = merge(baseWebpackConfig, {
   devtool: '#cheap-module-eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': processEnv
+      'process.env': config.dev.env
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),
