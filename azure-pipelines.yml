@@ -8,6 +8,8 @@ variables:
   containerRegistry: 'acrmicroappdgwb6c.azurecr.io'
   # Versión de las imágenes
   tag: '$(Build.BuildId)'
+  # Variables para el despliegue
+  resourceGroup: 'rg-microservice-app'
 
 stages:
 - stage: Build
@@ -77,3 +79,39 @@ stages:
         tags: |
           $(tag)
           latest
+
+- stage: Deploy
+  displayName: 'Update Container Apps'
+  dependsOn: Build
+  jobs:
+  - job: UpdateContainerApps
+    displayName: 'Update Container Apps with Latest Images'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Update Container Apps'
+      inputs:
+        azureSubscription: 'azure-subscription-connection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Actualizar auth-api
+          az containerapp update -n auth-api -g $(resourceGroup) \
+            --image $(containerRegistry)/auth-api:latest
+
+          # Actualizar users-api
+          az containerapp update -n users-api -g $(resourceGroup) \
+            --image $(containerRegistry)/users-api:latest
+            
+          # Actualizar todos-api
+          az containerapp update -n todos-api -g $(resourceGroup) \
+            --image $(containerRegistry)/todos-api:latest
+            
+          # Actualizar log-processor
+          az containerapp update -n log-processor -g $(resourceGroup) \
+            --image $(containerRegistry)/log-message-processor:latest
+            
+          # Actualizar frontend
+          az containerapp update -n frontend -g $(resourceGroup) \
+            --image $(containerRegistry)/frontend:latest
