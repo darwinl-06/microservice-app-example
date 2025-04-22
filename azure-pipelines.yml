@@ -92,7 +92,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Update Container Apps'
       inputs:
-        azureSubscription: 'azure-subscription-connection'
+        azureSubscription: 'AzureServiceConnection'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
