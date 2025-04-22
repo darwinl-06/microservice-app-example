@@ -57,6 +57,9 @@ import AppNav from '@/components/AppNav'
 import TodoItem from '@/components/TodoItem'
 import Spinner from '@/components/common/Spinner'
 
+// Get the Todos API address from environment variables
+const TODOS_API_ADDRESS = process.env.TODOS_API_ADDRESS || (window.location.protocol + '//' + window.location.host)
+
 export default {
   name: 'todos',
   components: {AppNav, TodoItem, Spinner},
@@ -86,7 +89,8 @@ export default {
     loadTasks () {
       this.isProcessing = true
       this.errorMessage = ''
-      this.$http.get('/todos').then(response => {
+      // Use direct API call instead of proxy
+      this.$http.get(`${TODOS_API_ADDRESS}/todos`).then(response => {
         for (var i in response.body) {
           this.tasks.push(response.body[i])
         }
@@ -106,7 +110,8 @@ export default {
           content: this.newTask
         }
 
-        this.$http.post('/todos', task).then(response => {
+        // Use direct API call instead of proxy
+        this.$http.post(`${TODOS_API_ADDRESS}/todos`, task).then(response => {
           this.newTask = ''
           this.isProcessing = false
           this.tasks.push(task)
@@ -123,7 +128,8 @@ export default {
       this.isProcessing = true
       this.errorMessage = ''
 
-      this.$http.delete('/todos/' + item.id).then(response => {
+      // Use direct API call instead of proxy
+      this.$http.delete(`${TODOS_API_ADDRESS}/todos/${item.id}`).then(response => {
         this.isProcessing = false
         this.tasks.splice(index, 1)
       }, error => {

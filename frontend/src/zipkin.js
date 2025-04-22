@@ -6,7 +6,11 @@ import {
 } from 'zipkin'
 import {HttpLogger} from 'zipkin-transport-http'
 import {zipkinInterceptor} from 'zipkin-instrumentation-vue-resource'
-const ZIPKIN_URL = window.location.protocol + '//' + window.location.host + '/zipkin'
+
+// Update to use a dedicated Zipkin endpoint instead of proxying through the frontend
+const ZIPKIN_SERVER = process.env.ZIPKIN_URL || 'http://localhost:9411'
+const ZIPKIN_URL = ZIPKIN_SERVER + '/api/v2/spans'
+
 /**
 * Tracing plugin that uses Zipkin. Initiates new traces with outgoing requests
 * and injects appropriate headers.

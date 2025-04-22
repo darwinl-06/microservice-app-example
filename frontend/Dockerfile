@@ -14,16 +14,22 @@ RUN npm install
 # Copiar el resto de los archivos del proyecto
 COPY . .
 
-# Construir la aplicación
+# Construir la aplicación con las variables de entorno para producción
+ARG AUTH_API_ADDRESS
+ARG TODOS_API_ADDRESS
+ARG ZIPKIN_URL
+ENV AUTH_API_ADDRESS=${AUTH_API_ADDRESS}
+ENV TODOS_API_ADDRESS=${TODOS_API_ADDRESS}
+ENV ZIPKIN_URL=${ZIPKIN_URL}
+
+# Construir la aplicación para producción
 RUN npm run build
 
 # Exponer el puerto configurado mediante variable de entorno
 EXPOSE 8080
 
 # Definir variables de entorno (valores por defecto que pueden ser sobreescritos)
-ENV PORT=8080 \
-    AUTH_API_ADDRESS=http://auth-api:8000 \
-    TODOS_API_ADDRESS=http://todos-api:8082
+ENV PORT=8080
 
 # Comando para ejecutar la aplicación
 CMD [ "npm", "start" ]
