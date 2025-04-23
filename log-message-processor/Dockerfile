@@ -16,8 +16,8 @@ COPY . .
 # Expose environment variables at runtime
 ENV REDIS_HOST=redis \
     REDIS_PORT=6379 \
-    REDIS_CHANNEL=log_channel \
-    ZIPKIN_URL=""
+    REDIS_CHANNEL=log_channel
+    # ZIPKIN_URL=""
 
 # Command to run when the container starts
 CMD ["python3", "main.py"]

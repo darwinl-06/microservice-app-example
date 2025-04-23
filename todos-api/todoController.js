@@ -1,7 +1,7 @@
 'use strict';
 const cache = require('memory-cache');
-const {Annotation, 
-    jsonEncoder: {JSON_V2}} = require('zipkin');
+// const {Annotation, 
+//     jsonEncoder: {JSON_V2}} = require('zipkin');
 
 const OPERATION_CREATE = 'CREATE',
       OPERATION_DELETE = 'DELETE';
@@ -51,15 +51,23 @@ class TodoController {
     }
 
     _logOperation (opName, username, todoId) {
-        this._tracer.scoped(() => {
-            const traceId = this._tracer.id;
-            this._redisClient.publish(this._logChannel, JSON.stringify({
-                zipkinSpan: traceId,
-                opName: opName,
-                username: username,
-                todoId: todoId,
-            }))
-        })
+        // Comentado: código de tracing con Zipkin
+        // this._tracer.scoped(() => {
+        //     const traceId = this._tracer.id;
+        //     this._redisClient.publish(this._logChannel, JSON.stringify({
+        //         zipkinSpan: traceId,
+        //         opName: opName,
+        //         username: username,
+        //         todoId: todoId,
+        //     }))
+        // })
+        
+        // Versión modificada sin la dependencia de Zipkin
+        this._redisClient.publish(this._logChannel, JSON.stringify({
+            opName: opName,
+            username: username,
+            todoId: todoId,
+        }))
     }
 
     _getTodoData (userID) {
