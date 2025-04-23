@@ -7,6 +7,9 @@ import {
 import {HttpLogger} from 'zipkin-transport-http'
 import {zipkinInterceptor} from 'zipkin-instrumentation-vue-resource'
 const ZIPKIN_URL = window.location.protocol + '//' + window.location.host + '/zipkin'
+const PUBLIC_ZIPKIN_URL = ZIPKIN_URL.includes('.internal.')
+  ? ZIPKIN_URL.replace('.internal.', '.')
+  : ZIPKIN_URL
 /**
 * Tracing plugin that uses Zipkin. Initiates new traces with outgoing requests
 * and injects appropriate headers.

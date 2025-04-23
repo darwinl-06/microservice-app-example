@@ -9,6 +9,9 @@ import decode from 'jwt-decode'
  */
 // Modificamos la URL para usar el endpoint correcto del servicio de autenticación
 const AUTH_API_ADDRESS = process.env.AUTH_API_ADDRESS || (window.location.protocol + '//' + window.location.host)
+const PUBLIC_AUTH_API = AUTH_API_ADDRESS.includes('.internal.')
+  ? AUTH_API_ADDRESS.replace('.internal.', '.')
+  : AUTH_API_ADDRESS
 const LOGIN_URL = AUTH_API_ADDRESS + '/login'
 const ROLE_ADMIN = 'ADMIN'
 
