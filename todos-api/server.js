@@ -2,7 +2,6 @@
 const express = require('express')
 const bodyParser = require("body-parser")
 const jwt = require('express-jwt')
-const cors = require('cors')  // Add CORS package
 
 const ZIPKIN_URL = process.env.ZIPKIN_URL || 'http://127.0.0.1:9411/api/v2/spans';
 const {Tracer, 
@@ -34,9 +33,6 @@ const port = process.env.TODO_API_PORT || 8082
 const jwtSecret = process.env.JWT_SECRET || "foo"
 
 const app = express()
-
-// Enable CORS for all routes
-app.use(cors())
 
 // tracing
 const ctxImpl = new CLSContext('zipkin');
