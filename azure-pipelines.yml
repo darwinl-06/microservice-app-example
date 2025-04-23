@@ -4,8 +4,8 @@ trigger:
 
 variables:
   # Container registry service connection establecida durante la configuración de la pipeline
-  dockerRegistryServiceConnection: 'acr-connecti'
-  containerRegistry: 'acrmicroappdgwb6c.azurecr.io'
+  dockerRegistryServiceConnection: 'acr-connectio'
+  containerRegistry: 'acrmicroappgtuqp0.azurecr.io'
   # Versión de las imágenes
   tag: '$(Build.BuildId)'
   # Variables para el despliegue
@@ -92,7 +92,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Update Container Apps'
       inputs:
-        azureSubscription: 'AzureServiceConnection'
+        azureSubscription: 'AzureServiceConnect'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |

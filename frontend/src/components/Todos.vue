@@ -80,13 +80,16 @@ export default {
   computed: {
     total () {
       return this.tasks.length
+    },
+    todosApiUrl () {
+      return process.env.TODOS_API_ADDRESS || ''
     }
   },
   methods: {
     loadTasks () {
       this.isProcessing = true
       this.errorMessage = ''
-      this.$http.get('/todos').then(response => {
+      this.$http.get(this.todosApiUrl + '/todos').then(response => {
         for (var i in response.body) {
           this.tasks.push(response.body[i])
         }
@@ -106,7 +109,7 @@ export default {
           content: this.newTask
         }
 
-        this.$http.post('/todos', task).then(response => {
+        this.$http.post(this.todosApiUrl + '/todos', task).then(response => {
           this.newTask = ''
           this.isProcessing = false
           this.tasks.push(task)
@@ -123,7 +126,7 @@ export default {
       this.isProcessing = true
       this.errorMessage = ''
 
-      this.$http.delete('/todos/' + item.id).then(response => {
+      this.$http.delete(this.todosApiUrl + '/todos/' + item.id).then(response => {
         this.isProcessing = false
         this.tasks.splice(index, 1)
       }, error => {
