@@ -1,7 +1,7 @@
 'use strict';
 const cache = require('memory-cache');
-// const {Annotation, 
-//     jsonEncoder: {JSON_V2}} = require('zipkin');
+const {Annotation, 
+    jsonEncoder: {JSON_V2}} = require('zipkin');
 
 const OPERATION_CREATE = 'CREATE',
       OPERATION_DELETE = 'DELETE';
