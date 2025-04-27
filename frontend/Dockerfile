@@ -1,35 +1,31 @@
-# Use Node.js 8.17.0 as base image with Alpine Linux for a smaller footprint
-FROM node:8.17.0-alpine
+# ---- Build Stage ----
+    FROM node:8-alpine AS build-stage
 
-# Install Python 2 and other dependencies using Alpine package manager
-RUN apk add --no-cache python2 make g++ 
-
-# Crear directorio de trabajo
-WORKDIR /app
-
-# Copiar package.json e instalar dependencias
-COPY package.json ./
-RUN npm install
-
-# Copiar el resto de los archivos del proyecto
-COPY . .
-
-# Construir la aplicación con las variables de entorno para producción
-ARG AUTH_API_ADDRESS
-ARG TODOS_API_ADDRESS
-ARG ZIPKIN_URL
-ENV AUTH_API_ADDRESS=${AUTH_API_ADDRESS}
-ENV TODOS_API_ADDRESS=${TODOS_API_ADDRESS}
-ENV ZIPKIN_URL=${ZIPKIN_URL}
-
-# Construir la aplicación para producción
-RUN npm run build
-
-# Exponer el puerto configurado mediante variable de entorno
-EXPOSE 8080
-
-# Definir variables de entorno (valores por defecto que pueden ser sobreescritos)
-ENV PORT=8080
-
-# Comando para ejecutar la aplicación
-CMD [ "npm", "start" ]
+    WORKDIR /app
+    
+    # Install Python 2 and build tools needed by node-gyp (for node-sass)
+    RUN apk add --no-cache python2 make g++
+    
+    COPY package*.json ./
+    RUN npm install
+    COPY . .
+    RUN npm run build
+    
+    # ---- Production Stage ----
+    FROM nginx:stable-alpine AS production-stage
+    
+    # Instalamos gettext para usar envsubst
+    RUN apk add --no-cache gettext
+    
+    # Copiamos la app construida
+    COPY --from=build-stage /app/dist /usr/share/nginx/html
+    
+    # Copiamos el nginx.conf como plantilla (no lo sobrescribimos directo)
+    COPY nginx.conf /etc/nginx/templates/default.conf.template
+    
+    # Exponemos el puerto
+    EXPOSE 8080
+    
+    # Al iniciar el contenedor, reemplazamos variables de entorno
+    CMD ["/bin/sh", "-c", "envsubst '${API_GATEWAY_FQDN}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+    
