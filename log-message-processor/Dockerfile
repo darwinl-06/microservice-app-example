@@ -14,9 +14,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose environment variables at runtime
-ENV REDIS_HOST=redis \
-    REDIS_PORT=6379 \
-    REDIS_CHANNEL=log_channel
+ENV REDIS_HOST=azurerm_redis_cache.redis.hostname 
+ENV REDIS_PORT=6379 
+ENV REDIS_CHANNEL=log_channel
+ENV REDIS_PASSWORD=azurerm_redis_cache.redis.primary_access_key
+
     # ZIPKIN_URL=""
 
 # Command to run when the container starts
