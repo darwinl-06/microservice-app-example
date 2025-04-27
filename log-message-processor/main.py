@@ -114,7 +114,7 @@ if __name__ == '__main__':
                                 span_name='save_log',
                                 transport_handler=http_transport,
                                 sample_rate=100
-                            ):
+                            ) as zipkin_context:
                                 log_message(message)
                         except Exception as e:
                             logger.error(f"Failed to send data to Zipkin: {e}")
