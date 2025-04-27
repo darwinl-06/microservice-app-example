@@ -7,7 +7,7 @@ from py_zipkin.zipkin import zipkin_span, ZipkinAttrs, generate_random_64bit_str
 import random
 import logging
 
-# Set up loggingxr77
+# Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -17,17 +17,15 @@ def log_message(message):
     print('message received after waiting for {}ms: {}'.format(time_delay, message))
 
 def create_redis_connection(redis_host, redis_port, redis_channel, redis_password):
-    """Create Redis connection with proper error handling and SSL configuration"""
+    """Create Redis connection without SSL configuration"""
     try:
-        # Check if we're using the Azure Redis format (SSL)s
-        use_ssl = redis_host.endswith('.redis.cache.windows.net')
-        logger.info(f"Attempting Redis connection to {redis_host}:{redis_port} with SSL={use_ssl}")
+        logger.info(f"Attempting Redis connection to {redis_host}:{redis_port}")
         redis_client = redis.Redis(
             host=redis_host,
             port=redis_port,
             db=0,
             password=redis_password,
-            ssl=use_ssl,
+            ssl=False,  # No SSL
             socket_timeout=None,           # Block indefinitely instead of timing out
             socket_connect_timeout=10,
             socket_keepalive=True,
@@ -38,7 +36,7 @@ def create_redis_connection(redis_host, redis_port, redis_channel, redis_passwor
         redis_client.ping()
         logger.info(f"Successfully connected to Redis at {redis_host}:{redis_port}")
         
-        # Create PubSubwsw
+        # Create PubSub
         pubsub = redis_client.pubsub()
         pubsub.subscribe([redis_channel])
         logger.info(f"Subscribed to channel: {redis_channel}")
@@ -128,7 +126,7 @@ if __name__ == '__main__':
                     continue
                 except redis.exceptions.ConnectionError as e:
                     logger.error(f"Connection error during message processing: {e}")
-                    break  # go reconnectdwa
+                    break  # go reconnect
                 except Exception as e:
                     logger.error(f"Unexpected error during message processing: {e}")
         
@@ -137,16 +135,16 @@ if __name__ == '__main__':
         except Exception as e:
             logger.error(f"Unexpected error: {e}")
         
-        # We'll reach here if the inner loop breaks due to an error 3333dwdwaddddwwww
+        # We'll reach here if the inner loop breaks due to an error
         retry_count += 1
         if retry_count < max_retries:
             logger.info(f"Retrying in {retry_delay} seconds...")
             time.sleep(retry_delay)
-            # Exponential backoff for retry delayfe
-            retry_delay = min(retry_delay * 2, 60)  # Max 60 secondsxxxx
+            # Exponential backoff for retry delay
+            retry_delay = min(retry_delay * 2, 60)  # Max 60 seconds
             logger.info(f"Retry delay increased to {retry_delay} seconds")
         else:
             logger.error("Escaped from the retry loop")
             logger.error(f"Max retries ({max_retries}) reached. Giving up.")
-            break # exit the loopswdw
+            break # exit the loop
     logger.info("Exiting log-message-processor")
