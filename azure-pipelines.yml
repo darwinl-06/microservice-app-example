@@ -84,34 +84,118 @@ stages:
   displayName: 'Update Container Apps'
   dependsOn: Build
   jobs:
-  - job: UpdateContainerApps
-    displayName: 'Update Container Apps with Latest Images'
+  - job: UpdateAuthApi
+    displayName: 'Update Auth API'
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: AzureCLI@2
-      displayName: 'Update Container Apps'
+      displayName: 'Update Auth API Container App'
       inputs:
         azureSubscription: 'AzureServiceConnect'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          # Actualizar auth-api
+          echo "Deploying Auth API to Container App..."
           az containerapp update -n auth-api -g $(resourceGroup) \
             --image $(containerRegistry)/auth-api:latest
+          
+          if [ $? -eq 0 ]; then
+            echo "Auth API deployment successful"
+          else
+            echo "Auth API deployment failed"
+            exit 1
+          fi
 
-          # Actualizar users-api
+  - job: UpdateUsersApi
+    displayName: 'Update Users API'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Update Users API Container App'
+      inputs:
+        azureSubscription: 'AzureServiceConnect'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Deploying Users API to Container App..."
           az containerapp update -n users-api -g $(resourceGroup) \
             --image $(containerRegistry)/users-api:latest
-            
-          # Actualizar todos-api
+          
+          if [ $? -eq 0 ]; then
+            echo "Users API deployment successful"
+          else
+            echo "Users API deployment failed"
+            exit 1
+          fi
+
+  - job: UpdateTodosApi
+    displayName: 'Update Todos API'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Update Todos API Container App'
+      inputs:
+        azureSubscription: 'AzureServiceConnect'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Deploying Todos API to Container App..."
           az containerapp update -n todos-api -g $(resourceGroup) \
             --image $(containerRegistry)/todos-api:latest
-            
-          # Actualizar log-processor
+          
+          if [ $? -eq 0 ]; then
+            echo "Todos API deployment successful"
+          else
+            echo "Todos API deployment failed"
+            exit 1
+          fi
+
+  - job: UpdateLogProcessor
+    displayName: 'Update Log Processor'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Update Log Processor Container App'
+      inputs:
+        azureSubscription: 'AzureServiceConnect'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Deploying Log Processor to Container App..."
           az containerapp update -n log-processor -g $(resourceGroup) \
             --image $(containerRegistry)/log-message-processor:latest
-            
-          # Actualizar frontend
+          
+          if [ $? -eq 0 ]; then
+            echo "Log Processor deployment successful"
+          else
+            echo "Log Processor deployment failed"
+            exit 1
+          fi
+
+  - job: UpdateFrontend
+    displayName: 'Update Frontend'
+    dependsOn: [UpdateAuthApi, UpdateUsersApi, UpdateTodosApi]
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Update Frontend Container App'
+      inputs:
+        azureSubscription: 'AzureServiceConnect'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Deploying Frontend to Container App..."
           az containerapp update -n frontend -g $(resourceGroup) \
             --image $(containerRegistry)/frontend:latest
+          
+          if [ $? -eq 0 ]; then
+            echo "Frontend deployment successful"
+          else
+            echo "Frontend deployment failed"
+            exit 1
+          fi
