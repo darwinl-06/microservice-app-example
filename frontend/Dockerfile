@@ -4,7 +4,7 @@ FROM node:14-alpine AS build-stage
 WORKDIR /app
 
 # Install Python 3 and build tools needed by node-gyp
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python2 make g++
 
 COPY package*.json ./
 RUN npm install
