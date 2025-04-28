@@ -102,6 +102,17 @@ stages:
           
           if [ $? -eq 0 ]; then
             echo "Auth API deployment successful"
+            
+            # Reiniciar el Container App después de la actualización
+            echo "Restarting Auth API Container App to apply changes..."
+            az containerapp restart --name auth-api --resource-group $(resourceGroup)
+            
+            if [ $? -eq 0 ]; then
+              echo "Auth API restart successful"
+            else
+              echo "Auth API restart failed"
+              exit 1
+            fi
           else
             echo "Auth API deployment failed"
             exit 1
@@ -125,6 +136,17 @@ stages:
           
           if [ $? -eq 0 ]; then
             echo "Users API deployment successful"
+            
+            # Reiniciar el Container App después de la actualización
+            echo "Restarting Users API Container App to apply changes..."
+            az containerapp restart --name users-api --resource-group $(resourceGroup)
+            
+            if [ $? -eq 0 ]; then
+              echo "Users API restart successful"
+            else
+              echo "Users API restart failed"
+              exit 1
+            fi
           else
             echo "Users API deployment failed"
             exit 1
@@ -148,6 +170,17 @@ stages:
           
           if [ $? -eq 0 ]; then
             echo "Todos API deployment successful"
+            
+            # Reiniciar el Container App después de la actualización
+            echo "Restarting Todos API Container App to apply changes..."
+            az containerapp restart --name todos-api --resource-group $(resourceGroup)
+            
+            if [ $? -eq 0 ]; then
+              echo "Todos API restart successful"
+            else
+              echo "Todos API restart failed"
+              exit 1
+            fi
           else
             echo "Todos API deployment failed"
             exit 1
@@ -171,6 +204,17 @@ stages:
           
           if [ $? -eq 0 ]; then
             echo "Log Processor deployment successful"
+            
+            # Reiniciar el Container App después de la actualización
+            echo "Restarting Log Processor Container App to apply changes..."
+            az containerapp restart --name log-processor --resource-group $(resourceGroup)
+            
+            if [ $? -eq 0 ]; then
+              echo "Log Processor restart successful"
+            else
+              echo "Log Processor restart failed"
+              exit 1
+            fi
           else
             echo "Log Processor deployment failed"
             exit 1
@@ -195,6 +239,17 @@ stages:
           
           if [ $? -eq 0 ]; then
             echo "Frontend deployment successful"
+            
+            # Reiniciar el Container App después de la actualización
+            echo "Restarting Frontend Container App to apply changes..."
+            az containerapp restart --name frontend --resource-group $(resourceGroup)
+            
+            if [ $? -eq 0 ]; then
+              echo "Frontend restart successful"
+            else
+              echo "Frontend restart failed"
+              exit 1
+            fi
           else
             echo "Frontend deployment failed"
             exit 1
