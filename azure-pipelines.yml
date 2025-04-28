@@ -3,12 +3,9 @@ trigger:
   - master
 
 variables:
-  # Container registry service connection establecida durante la configuración de la pipeline
   dockerRegistryServiceConnection: 'ACR-CONNECTION-REAL'
   containerRegistry: 'acrmicroappyb6znq.azurecr.io'
-  # Versión de las imágenes
   tag: '$(Build.BuildId)'
-  # Variables para el despliegue
   resourceGroup: 'rg-microservice-app'
 
 stages:
@@ -33,7 +30,7 @@ stages:
           latest
 
     - task: Docker@2
-      displayName: 'Build and Push frontend '
+      displayName: 'Build and Push frontend'
       inputs:
         command: buildAndPush
         containerRegistry: $(dockerRegistryServiceConnection)
@@ -97,22 +94,14 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo "Deploying Auth API to Container App..."
-          az containerapp update -n auth-api -g $(resourceGroup) \
-            --image $(containerRegistry)/auth-api:latest
+          az containerapp update -n auth-api -g $(resourceGroup) --image $(containerRegistry)/auth-api:latest
           
           if [ $? -eq 0 ]; then
-            echo "Auth API deployment successful"
-            
-            # Reiniciar el Container App después de la actualización
-            echo "Restarting Auth API Container App to apply changes..."
-            az containerapp restart --name auth-api --resource-group $(resourceGroup)
-            
-            if [ $? -eq 0 ]; then
-              echo "Auth API restart successful"
-            else
-              echo "Auth API restart failed"
-              exit 1
-            fi
+            echo "Stopping Auth API..."
+            az containerapp stop --name auth-api --resource-group $(resourceGroup)
+            echo "Starting Auth API..."
+            az containerapp start --name auth-api --resource-group $(resourceGroup)
+            echo "Auth API restart (stop/start) successful"
           else
             echo "Auth API deployment failed"
             exit 1
@@ -131,22 +120,14 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo "Deploying Users API to Container App..."
-          az containerapp update -n users-api -g $(resourceGroup) \
-            --image $(containerRegistry)/users-api:latest
+          az containerapp update -n users-api -g $(resourceGroup) --image $(containerRegistry)/users-api:latest
           
           if [ $? -eq 0 ]; then
-            echo "Users API deployment successful"
-            
-            # Reiniciar el Container App después de la actualización
-            echo "Restarting Users API Container App to apply changes..."
-            az containerapp restart --name users-api --resource-group $(resourceGroup)
-            
-            if [ $? -eq 0 ]; then
-              echo "Users API restart successful"
-            else
-              echo "Users API restart failed"
-              exit 1
-            fi
+            echo "Stopping Users API..."
+            az containerapp stop --name users-api --resource-group $(resourceGroup)
+            echo "Starting Users API..."
+            az containerapp start --name users-api --resource-group $(resourceGroup)
+            echo "Users API restart (stop/start) successful"
           else
             echo "Users API deployment failed"
             exit 1
@@ -165,22 +146,14 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo "Deploying Todos API to Container App..."
-          az containerapp update -n todos-api -g $(resourceGroup) \
-            --image $(containerRegistry)/todos-api:latest
+          az containerapp update -n todos-api -g $(resourceGroup) --image $(containerRegistry)/todos-api:latest
           
           if [ $? -eq 0 ]; then
-            echo "Todos API deployment successful"
-            
-            # Reiniciar el Container App después de la actualización
-            echo "Restarting Todos API Container App to apply changes..."
-            az containerapp restart --name todos-api --resource-group $(resourceGroup)
-            
-            if [ $? -eq 0 ]; then
-              echo "Todos API restart successful"
-            else
-              echo "Todos API restart failed"
-              exit 1
-            fi
+            echo "Stopping Todos API..."
+            az containerapp stop --name todos-api --resource-group $(resourceGroup)
+            echo "Starting Todos API..."
+            az containerapp start --name todos-api --resource-group $(resourceGroup)
+            echo "Todos API restart (stop/start) successful"
           else
             echo "Todos API deployment failed"
             exit 1
@@ -199,22 +172,14 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo "Deploying Log Processor to Container App..."
-          az containerapp update -n log-processor -g $(resourceGroup) \
-            --image $(containerRegistry)/log-message-processor:latest
+          az containerapp update -n log-processor -g $(resourceGroup) --image $(containerRegistry)/log-message-processor:latest
           
           if [ $? -eq 0 ]; then
-            echo "Log Processor deployment successful"
-            
-            # Reiniciar el Container App después de la actualización
-            echo "Restarting Log Processor Container App to apply changes..."
-            az containerapp restart --name log-processor --resource-group $(resourceGroup)
-            
-            if [ $? -eq 0 ]; then
-              echo "Log Processor restart successful"
-            else
-              echo "Log Processor restart failed"
-              exit 1
-            fi
+            echo "Stopping Log Processor..."
+            az containerapp stop --name log-processor --resource-group $(resourceGroup)
+            echo "Starting Log Processor..."
+            az containerapp start --name log-processor --resource-group $(resourceGroup)
+            echo "Log Processor restart (stop/start) successful"
           else
             echo "Log Processor deployment failed"
             exit 1
@@ -234,22 +199,14 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo "Deploying Frontend to Container App..."
-          az containerapp update -n frontend -g $(resourceGroup) \
-            --image $(containerRegistry)/frontend:latest
+          az containerapp update -n frontend -g $(resourceGroup) --image $(containerRegistry)/frontend:latest
           
           if [ $? -eq 0 ]; then
-            echo "Frontend deployment successful"
-            
-            # Reiniciar el Container App después de la actualización
-            echo "Restarting Frontend Container App to apply changes..."
-            az containerapp restart --name frontend --resource-group $(resourceGroup)
-            
-            if [ $? -eq 0 ]; then
-              echo "Frontend restart successful"
-            else
-              echo "Frontend restart failed"
-              exit 1
-            fi
+            echo "Stopping Frontend..."
+            az containerapp stop --name frontend --resource-group $(resourceGroup)
+            echo "Starting Frontend..."
+            az containerapp start --name frontend --resource-group $(resourceGroup)
+            echo "Frontend restart (stop/start) successful"
           else
             echo "Frontend deployment failed"
             exit 1
