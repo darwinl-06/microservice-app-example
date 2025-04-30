@@ -31,8 +31,8 @@ COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 # Configurar variables de entorno para la integración con API Management
-ENV API_GATEWAY_URL="apim-yb6znq.azure-api.net"
-ENV APIM_SUBSCRIPTION_KEY="9e4cb027af834c0e88f7a83bd51927df"
+ENV API_GATEWAY_URL="apim-3qdnf8.azure-api.net"
+ENV APIM_SUBSCRIPTION_KEY="7d2d6312752f464c8cf5203080b596d6"
 
 # Exponer el puerto 8080 para Container Apps
 EXPOSE 8080
