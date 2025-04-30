@@ -3,8 +3,8 @@ trigger:
 
 variables:
   # Container registry service connection establecida durante la configuración de la pipeline
-  dockerRegistryServiceConnection: 'ACR-CONNECTION-REAL'
-  containerRegistry: 'acrmicroappyb6znq.azurecr.io'
+  dockerRegistryServiceConnection: 'registry-connection'
+  containerRegistry: 'acrmicroapp3qdnf8.azurecr.io'
   # Versión de las imágenes
   tag: '$(Build.BuildId)'
   # Variables para el despliegue
