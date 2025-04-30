@@ -145,8 +145,6 @@ Automation of build, testing, and deployment on code changes!
 - *GitOps:* Git as the single source of truth.
 - *Environment Separation:* Branches and variable groups.
 - *Efficient CI/CD:* Deploy only what has changed.
-- *Secrets Management:* Azure Key Vault integration.
-- *Polyglot Architecture:* Best technology per service.
 
 ---
 
